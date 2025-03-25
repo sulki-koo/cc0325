@@ -6,13 +6,13 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,15 +28,23 @@ public class Member implements Serializable{
 
 	@Id
 	@Column(name="MEM_ID", columnDefinition = "VARCHAR2(20)")
+	@NotBlank(message = "아이디는 필수 항목입니다.")
+    @Size(min = 5, max = 20, message = "아이디는 5자 이상 20자 이하로 입력하세요.")
 	private String memId;
 
 	@Column(name="MEM_PASSWORD",columnDefinition = "VARCHAR2(255)", nullable = false)
+	@NotBlank(message = "비밀번호는 필수 항목입니다.")
+    @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하로 입력하세요.")
 	private String memPassword;
 
 	@Column(name="MEM_NAME", columnDefinition = "NVARCHAR2(50)", nullable = false)
+	@NotBlank(message = "이름은 필수 항목입니다.")
+    @Size(min = 2, max = 20, message = "이름은 2자 이상 20자 이하로 입력하세요.")
 	private String memName;
 
 	@Column(name="MEM_NICKNAME", unique = true, columnDefinition = "NVARCHAR2(10)", nullable = false)
+	@NotBlank(message = "닉네임은 필수 항목입니다.")
+    @Size(min = 4, max = 8, message = "닉네임은 4자 이상 8자 이하로 입력하세요.")
 	private String memNickname;
 
 	@Column(name="MEM_EMAIL", columnDefinition = "VARCHAR2(50)", nullable = false)
