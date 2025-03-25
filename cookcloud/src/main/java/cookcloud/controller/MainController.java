@@ -8,8 +8,15 @@ public class MainController {
 
     // 메인 페이지
     @GetMapping("/")
-    public String homePage() {
-        return "home";
+    public String mainPage() {
+        return "main"; // main.html
+    }
+
+    // 로그인 페이지
+    @GetMapping("/login")
+    public String login() {
+        // 로그인 페이지로 리다이렉트
+        return "login";  // login.html 페이지를 렌더링
     }
 
     // 냉장고 털기 페이지

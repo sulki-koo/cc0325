@@ -1,30 +1,25 @@
-function validateForm() {
-    let memId = document.getElementById("username").value;
-    let memPassword = document.getElementById("password").value;
-    let memName = document.getElementById("name").value;
-    let memNickname = document.getElementById("nickname").value;
+// keyup 이벤트로 비밀번호 확인 실시간 체크
+document.getElementById("ckeckPassword").addEventListener("keyup", function() {
+	let password = document.getElementById("password").value;
+	let checkPassword = document.getElementById("ckeckPassword").value;
 
-    let memIdRegex = /^[a-zA-Z0-9]{5,20}$/;
-    let memPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
-    let memNameRegex = /^[a-zA-Z가-힣]{2,20}$/;
-    let memNicknameRegex = /^[a-zA-Z0-9가-힣]{4,8}$/;
+	// 비밀번호가 일치하지 않으면 오류 메시지 표시
+	if (password !== checkPassword) {
+		document.getElementById("error-message").textContent = "비밀번호가 일치하지 않습니다.";
+		document.querySelector(".submit-btn").disabled = true; // 일치하지 않으면 가입하기 버튼 비활성화
+	} else {
+		document.getElementById("error-message").textContent = ""; // 일치하면 오류 메시지 지움
+		document.querySelector(".submit-btn").disabled = false; // 일치하면 가입하기 버튼 활성화
+	}
+});
 
-    if (!memIdRegex.test(memId)) {
-        alert("아이디는 5자 이상 20자 이하이며, 영문과 숫자만 입력 가능합니다.");
-        return false;
-    }
-    if (!memPasswordRegex.test(memPassword)) {
-        alert("비밀번호는 8~20자이며, 영문과 숫자를 포함해야 합니다.");
-        return false;
-    }
-    if (!memNameRegex.test(memName)) {
-        alert("이름은 한글, 영어만 입력 가능하며, 2~20자여야 합니다.");
-        return false;
-    }
-    if (!memNicknameRegex.test(memNickname)) {
-        alert("닉네임은 한글, 영어, 숫자만 입력 가능하며, 4~8자여야 합니다.");
-        return false;
-    }
+// 폼 제출 시 비밀번호가 일치하지 않으면 제출되지 않도록
+document.getElementById("signupForm").addEventListener("submit", function(event) {
+	let password = document.getElementById("password").value;
+	let checkPassword = document.getElementById("ckeckPassword").value;
 
-    return true;
-}
+	if (password !== checkPassword) {
+		event.preventDefault(); // 폼 제출 방지
+		document.getElementById("error-message").textContent = "비밀번호가 일치하지 않습니다.";
+	}
+});
