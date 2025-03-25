@@ -18,23 +18,38 @@ import cookcloud.entity.Member;
 import cookcloud.entity.Message;
 import cookcloud.entity.Recipe;
 import cookcloud.entity.Review;
-import cookcloud.repository.MemberRepository;
 import cookcloud.service.AllergyService;
+import cookcloud.service.FollowsService;
+import cookcloud.service.LikesService;
 import cookcloud.service.MemberService;
-import cookcloud.service.MyPageService;
+import cookcloud.service.MessageService;
+import cookcloud.service.RecipeService;
+import cookcloud.service.ReviewService;
 
 @Controller
 @RequestMapping("/mypage")
 public class MyPageController {
 
     @Autowired
-    private MyPageService myPageService;
-    
-    @Autowired
     private MemberService memberService;
     
     @Autowired
     private AllergyService allergyService;
+    
+    @Autowired
+    private RecipeService recipeService;
+    
+    @Autowired
+    private FollowsService followsService;
+    
+    @Autowired
+    private LikesService likesService;
+    
+    @Autowired
+    private ReviewService reviewService;
+    
+    @Autowired
+    private MessageService messageService;
     
     @GetMapping
     public String viewMyPage(Model model, Principal principal) {
@@ -44,12 +59,12 @@ public class MyPageController {
         String memId = member.getMemId();
         
         // 필요한 데이터 조회
-        List<Recipe> myRecipes = myPageService.getMyRecipes(memId);
-        List<Member> followings = myPageService.getMyFollowings(memId);
-        List<Member> followers = myPageService.getMyFollowers(memId);
-        List<Recipe> likedRecipes = myPageService.getLikedRecipes(memId);
-        List<Review> myReviews = myPageService.getMyReviews(memId);
-        List<Message> messages = myPageService.getMessages(memId);
+        List<Recipe> myRecipes = recipeService.getMyRecipes(memId);
+        List<Member> followings = followsService.getMyFollowings(memId);
+        List<Member> followers = followsService.getMyFollowers(memId);
+        List<Recipe> likedRecipes = likesService.getLikedRecipes(memId);
+        List<Review> myReviews = reviewService.getMyReviews(memId);
+        List<Message> messages = messageService.getMessages(memId);
         
         // 모델에 데이터 전달
         model.addAttribute("member", member);
@@ -64,19 +79,20 @@ public class MyPageController {
         return "mypage/main";  // Thymeleaf 템플릿 이름
     }
     
-    // AJAX: 메시지 읽음 처리
+    // 메시지 읽음 처리
     @PostMapping("/message/{id}/read")
     @ResponseBody
     public ResponseEntity<?> markMessageAsRead(@PathVariable Long id) {
-        myPageService.markMessageAsRead(id);
+    	messageService.markMessageAsRead(id);
         return ResponseEntity.ok().build();
     }
     
-    // AJAX: 메시지 삭제 처리
+    // 메시지 삭제 처리
     @DeleteMapping("/message/{id}")
     @ResponseBody
     public ResponseEntity<?> deleteMessage(@PathVariable Long id) {
-        myPageService.deleteMessage(id);
+    	messageService.deleteMessage(id);
         return ResponseEntity.ok().build();
     }
+    
 }

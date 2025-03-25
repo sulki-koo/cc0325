@@ -36,4 +36,17 @@ public class RecipeService {
 		return null;
 	}
 
+	// 개인 레시피 목록 조회
+    public List<Recipe> getMyRecipes(String memId) {
+    	List<Recipe> recipes = recipeRepository.findByMemberMemId(memId);
+        
+        // 각 레시피에 첫 번째 첨부파일 URL을 설정
+        for (Recipe recipe : recipes) {
+            if (!recipe.getAttachList().isEmpty()) {
+                recipe.setImageUrl(recipe.getAttachList().get(0).getAttachServerName());
+            }
+        }
+        return recipes;
+    }
+	
 }

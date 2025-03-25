@@ -19,7 +19,7 @@ import cookcloud.service.MemberService;
 import jakarta.validation.Valid;
 
 @Controller
-public class MemberController {
+public class SignupController {
 
     @Autowired
     private MemberService memberService;
