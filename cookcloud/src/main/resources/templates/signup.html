@@ -14,7 +14,7 @@
     <h2>회원가입</h2>
     <form th:action="@{/signup}" method="post" th:object="${member}">
         아이디<input type="text" th:field="*{memId}" id="memId" class="input-field" name="memId" required><br>
-        <p th:if="${#fields.hasErrors('memId')}" th:errors="*{username}"></p>
+        <div id="idError"></div>
         
         비밀번호<input type="password" th:field="*{memPassword}" id="memPassword" class="input-field" name="memPassword" required><br><br>
         <p th:if="${#fields.hasErrors('memPassword')}" th:errors="*{memPassword}"></p>
@@ -23,7 +23,7 @@
         <p th:if="${#fields.hasErrors('memName')}" th:errors="*{memName}"></p>
         
         닉네임<input type="text" th:field="*{memNickname}" id="memNickname" class="input-field" name="memNickname" required><br>
-        <p th:if="${#fields.hasErrors('memNickname')}" th:errors="*{memNickname}"></p>
+        <div id="idError"></div>
         
         <div class="dropdown">
 			<label for="allergy">알러지&비선호음식 체크</label>

@@ -31,7 +31,7 @@ function validateForm() {
 document.getElementById('memId').addEventListener('keyup', function() {
 	let memId = this.value;
 	if (memId.length > 0) {
-		fetch(`/checkDuplicate?memId=${memId}`)
+		fetch(`/checkMemId?memId=${memId}`)
 			.then(response => response.json)
 			.then(data => {
 				const idError = document.getElementById('idError');
@@ -48,7 +48,7 @@ document.getElementById('memId').addEventListener('keyup', function() {
 document.getElementById('memNickname').addEventListener('keyup', function() {
 	let memNickname = this.value;
 	if (memNickname.length > 0) {
-		fetch(`/checkDuplicate?memNickname=${memNickname}`)
+		fetch(`/checkMemNickname?memNickname=${memNickname}`)
 			.then(response => response.json)
 			.then(data => {
 				const nicknameError = document.getElementById('nicknameError');
@@ -60,3 +60,4 @@ document.getElementById('memNickname').addEventListener('keyup', function() {
 			});
 	}
 });
+

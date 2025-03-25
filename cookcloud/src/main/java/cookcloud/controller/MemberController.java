@@ -40,15 +40,25 @@ public class MemberController {
         return "signup";  // signup.html 페이지 반환
     }
     
-    @GetMapping("/checkDuplicate")
+    @GetMapping("/checkMemId")
     @ResponseBody
-    public Map<String, Object> checkDuplicate(@RequestParam String memId, @RequestParam String memNickname){
+    public Map<String, Object> checkMemId(@RequestParam String memId){
     	Map<String, Object> response = new HashMap<>();
     	
     	if(memId != null && !memId.isEmpty()) {
+    		memId = memId.trim();
     		boolean idExists = memberService.checkIdExists(memId);
     		response.put("exists", idExists);
-    	} else if(memNickname != null && !memNickname.isEmpty()) {
+    	} 
+    	return response;
+    }
+    
+    @GetMapping("/checkMemNickname")
+    @ResponseBody
+    public Map<String, Object> checkMemNickname(@RequestParam String memNickname){
+    	Map<String, Object> response = new HashMap<>();
+    	
+    	if(memNickname != null && !memNickname.isEmpty()) {
     		boolean nicknameExists = memberService.checkNicknameExists(memNickname);
     		response.put("exists", nicknameExists);
     	}
