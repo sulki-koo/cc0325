@@ -1,6 +1,7 @@
 package cookcloud.controller;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cookcloud.entity.Member;
 import cookcloud.entity.MemberAllergyFood;
@@ -36,21 +39,33 @@ public class MemberController {
     	model.addAttribute("member", new Member());
         return "signup";  // signup.html 페이지 반환
     }
+    
+    @GetMapping("/checkDuplicate")
+    @ResponseBody
+    public Map<String, Object> checkDuplicate(@RequestParam String memId, @RequestParam String memNickname){
+    	Map<String, Object> response = new HashMap<>();
+    	
+    	if(memId != null && !memId.isEmpty()) {
+    		boolean idExists = memberService.checkIdExists(memId);
+    		response.put("exists", idExists);
+    	} else if(memNickname != null && !memNickname.isEmpty()) {
+    		boolean nicknameExists = memberService.checkNicknameExists(memNickname);
+    		response.put("exists", nicknameExists);
+    	}
+    	return response;
+    }
 
     // 회원가입 처리
     @PostMapping("/signup")
     public String registerMember(@ModelAttribute @Valid Member member, Model model) {
         try {
             memberService.registerMember(member.getMemId(), member.getMemPassword(), member.getMemName(), member.getMemNickname(), member.getMemEmail(), member.getMemPhone());
+           
             // 알러지 정보 저장
             if (member.getMemberAllergyFoodList() != null && !member.getMemberAllergyFoodList().isEmpty()) {
                 for (MemberAllergyFood allergyFood : member.getMemberAllergyFoodList()) {
-                    MemberAllergyFood newMemberAllergyFood = new MemberAllergyFood();
-                    newMemberAllergyFood.setMemId(member.getMemId());
-                    newMemberAllergyFood.setAllergyId(allergyFood.getAllergyId());
-                    newMemberAllergyFood.setMemAllergyInsertAt(LocalDateTime.now());
-                    newMemberAllergyFood.setMemAllergyIsDeleted("N");  // 초기값 설정
-                    memberAllergyFoodService.insertMemAllergyFood(newMemberAllergyFood);
+                    allergyFood.setMemId(member.getMemId());  // MEM_ID 설정
+                    memberAllergyFoodService.insertMemAllergyFood(allergyFood); // 서비스 호출
                 }
             }
             

@@ -38,14 +38,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// 로그아웃 버튼 클릭 시 logout() 함수 호출
 document.getElementById("logoutLink")?.addEventListener("click", function(event) {
-    event.preventDefault();  // 기본 링크 동작을 막음
+    event.preventDefault();  // 기본 링크 동작 막기
     logout();  // 로그아웃 함수 호출
 });
+
 function logout() {
-    sessionStorage.clear();  // 로그아웃 시 모든 세션 스토리지 초기화
-    window.location.href = '/';  // 로그아웃 후 홈으로 이동
+	fetch('/logout', {
+	        method: 'POST',  // POST 요청
+	        credentials: 'same-origin',  // 쿠키를 포함한 요청
+	    }).then(response => {
+        if (response.ok) {
+            sessionStorage.clear();  // 세션 스토리지 초기화
+            window.location.href = '/';  // 홈으로 이동
+        } else {
+            alert('로그아웃 실패');
+        }
+    }).catch(error => console.error('Error:', error));
 }
 
 // 메시지 읽음 처리

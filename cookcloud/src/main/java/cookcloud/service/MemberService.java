@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import cookcloud.entity.Member;
+import cookcloud.entity.MemberAllergyFood;
 import cookcloud.repository.MemberRepository;
 import cookcloud.service.MemberService;
 
@@ -25,6 +26,14 @@ public class MemberService {
 		Member member = memberRepository.findByMemNickname(memNickname)
                 .orElseThrow(() -> new RuntimeException("회원 확인 불가"));
 		return member;
+	}
+	
+	public boolean checkIdExists(String memId) {
+		return memberRepository.existsByMemId(memId);
+	}
+	
+	public boolean checkNicknameExists(String memNickname) {
+		return memberRepository.existsByMemNickname(memNickname);
 	}
 
 	// 회원 가입 메서드
