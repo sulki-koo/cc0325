@@ -23,7 +23,6 @@ public class CodeController {
 	@GetMapping
 	public ResponseEntity<Map<CodeId, Code>> getAllCode() {
 		Map<CodeId, Code> codeData = codeService.getAllCode();
-		System.out.println(codeData);
 		
 		if (codeData != null && !codeData.isEmpty()) {
 			return ResponseEntity.ok(codeData);

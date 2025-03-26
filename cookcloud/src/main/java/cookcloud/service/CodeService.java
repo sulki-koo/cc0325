@@ -30,7 +30,7 @@ public class CodeService {
 				code ->  new CodeId(code.getParentCode(), code.getChildCode()), 
 				code -> code
 				));
-		 System.out.println("Data loaded into map. Total records: " + codeMap);  // 로딩된 map의 크기 확인
+		 System.out.println("서비스-코드맵 : " + codeMap);  // 로딩된 map의 크기 확인
 	}
 	
 	public Code getCodeInfo(CodeId codeId) {

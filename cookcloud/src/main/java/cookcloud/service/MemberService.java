@@ -3,6 +3,7 @@ package cookcloud.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cookcloud.entity.Member;
 import cookcloud.repository.MemberRepository;
@@ -11,6 +12,7 @@ import cookcloud.service.MemberService;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -20,35 +22,62 @@ public class MemberService {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
-	public Member findByMemNickname(String memNickname){
-		Member member = memberRepository.findByMemNickname(memNickname)
-                .orElseThrow(() -> new RuntimeException("회원 확인 불가"));
-		return member;
+
+	public List<Member> getMemberList() {
+		return memberRepository.findAll();
 	}
 
-	// 회원 가입 메서드
-	public void registerMember(String memId, String memPassword, String memName, String memNickname, String memEmail,
-			String memPhone) {
-		// 비밀번호 암호화
-		String encodedPassword = passwordEncoder.encode(memPassword);
+	public Optional<Member> getMember(String memId) {
+		return memberRepository.findById(memId);
+	}
 
-		// 새로운 회원 객체 생성
-		Member member = new Member();
-		member.setMemId(memId);
-		member.setMemPassword(encodedPassword); // 암호화된 비밀번호 저장
-		member.setMemName(memName);
-		member.setMemNickname(memNickname);
-		member.setMemEmail(memEmail);
-		member.setMemPhone(memPhone);
+	public Optional<Member> findByMemNickname(String memNickname) {
+		Optional<Member> opMember = memberRepository.findByMemNickname(memNickname);
+//		System.out.println("memNickName ===> " + memNickname);
+//		System.out.println("member ===> " + opMember.get());
+		return opMember;
+	}
 
-		// 가입 날짜 및 기본값 설정
-		member.setMemInsertAt(LocalDateTime.now());
-		member.setRoleCode(22L); // 기본값 (예: 일반 유저)
-		member.setMemStatusCode(11L); // 기본값 (예: 활성 상태)
-
-		// DB에 저장
+	@Transactional
+	public void insertMember(Member member) {
+		member.setMemPassword(passwordEncoder.encode(member.getMemPassword()));
+		member.setMemInsertAt(LocalDateTime.now()); // 가입 날짜
+		member.setRoleCode(22L); // 회원
+		member.setMemStatusCode(11L); // 정상 상태
 		memberRepository.save(member);
 	}
-	
+
+	public boolean isDuplicate(String memId, String memNickname) {
+		boolean idExists = getMember(memId).isPresent();
+		boolean nicknameExists = findByMemNickname(memNickname).isPresent();
+
+		System.out.println(idExists + " - ID 존재 여부");
+		System.out.println(nicknameExists + " - 닉네임 존재 여부");
+
+		return idExists || nicknameExists;
+	}
+
+	@Transactional
+	public Member updateMember(Member member) {
+		Member findMember = getMember(member.getMemId()).get();
+
+		findMember.setMemName(member.getMemName());
+		findMember.setMemNickname(member.getMemNickname());
+		if (member.getMemPassword() != findMember.getMemPassword()) {
+			findMember.setMemPassword(passwordEncoder.encode(findMember.getMemPassword())); // 암호화된 비밀번호 저장
+		}
+		findMember.setMemEmail(member.getMemEmail());
+		findMember.setMemPhone(member.getMemPhone());
+		return memberRepository.save(findMember);
+	}
+
+	@Transactional
+	public void deleteMember(String memId) {
+		Member findMember = getMember(memId).get();
+		findMember.setMemId(memId);
+		findMember.setMemDeleteAt(LocalDateTime.now()); // 탈퇴일
+		findMember.setMemStatusCode(13L); // 탈퇴 회원
+		memberRepository.save(findMember);
+	}
+
 }

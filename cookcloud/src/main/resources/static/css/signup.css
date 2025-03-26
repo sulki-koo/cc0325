@@ -121,6 +121,12 @@ body {
     background-color: #555;
 }
 
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
 /* 미디어 쿼리 */
 @media (max-width: 768px) {
     .container {

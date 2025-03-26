@@ -51,20 +51,10 @@ public class Recipe implements Serializable {
 	@Column(name="RECIPE_INSERT_AT", nullable = false)
 	private LocalDateTime recipeInsertAt;
 	
-	@PrePersist
-	protected void onInsert() {
-		this.recipeInsertAt = LocalDateTime.now();
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="RECIPE_UPDATE_AT")
 	private LocalDateTime recipeUpdateAt;
 	
-	@PreUpdate
-	protected void onUpdate() {
-		this.recipeUpdateAt = LocalDateTime.now();
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="RECIPE_DELETE_AT")
 	private LocalDateTime recipeDeleteAt;
